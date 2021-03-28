@@ -41,54 +41,122 @@ const menu = {
 
 
 function order(menuName) {
-    return new Promise(function(resolve, reject){
-        const result = [];
+    const cookFood = ({name, time}) => new Promise((resolve, reject) => {
+        const condition = +Math.random().toFixed();
 
-        function cooking({ name, time }, index) {
-            const condition = +Math.random().toFixed();
-            setTimeout(() => {
-                if (condition) {
-                    result[index] = name;
-                    if (menuName.length === result.filter(Boolean).length) {
-    
-                        return resolve(result);
-                    }
-    
+        setTimeout(() => {
+            condition ? resolve(name) : reject(name);
+        }, time);
+    });
 
-                } else {
-                    return reject(new Error('shit happens')) ;
-                }
+    return Promise.allSettled(menuName.map(cookFood));
 
-            }, time);
-    }
-    
-    menuName.forEach(cooking); 
-    })
+
 }
+const order_first = order(menu.meat).then((result) => {
+   return new Promise((resolve, reject) =>{
+            const resutWthStatus = {
+                result,
+                status:false
+            }
+            function ready(el) {
+                return el.status === 'fulfilled';
+            }
+            
+            if (result.every(ready)) {
+                resutWthStatus.status = true;
+                resolve(resutWthStatus)
+            } else {
+                return reject('shit happens')
+            }
+        })
 
-const first = order(menu.tako);
-const second = order(menu.pizza);
-const third = order(menu.meat);
-const fourth = order(menu.pizza);
+});
+const order_second = order(menu.pizza).then((result) => {
+    return new Promise((resolve, reject) =>{
+             const resutWthStatus = {
+                 result,
+                 status:false
+             }
+             function ready(el) {
+                 return el.status === 'fulfilled';
+             }
+             
+             if (result.every(ready)) {
+                 resutWthStatus.status = true;
+                 resolve(resutWthStatus)
+             } else {
+                 return reject('shit happens')
+             }
+         })
+ 
+ });
+ const order_third = order(menu.tako).then((result) => {
+    return new Promise((resolve, reject) =>{
+             const resutWthStatus = {
+                 result,
+                 status:false
+             }
+             function ready(el) {
+                 return el.status === 'fulfilled';
+             }
+             
+             if (result.every(ready)) {
+                 resutWthStatus.status = true;
+                 resolve(resutWthStatus)
+             } else {
+                 return reject('shit happens')
+             }
+         })
+ 
+ });
+ const order_fouth = order(menu.pizza).then((result) => {
+    return new Promise((resolve, reject) =>{
+             const resutWthStatus = {
+                 result,
+                 status:false
+             }
+             function ready(el) {
+                 return el.status === 'fulfilled';
+             }
+             
+             if (result.every(ready)) {
+                 resutWthStatus.status = true;
+                 resolve(resutWthStatus)
+             } else {
+                 return reject('shit happens')
+             }
+         })
+ 
+ });
+ const order_fivth = order(menu.meat).then((result) => {
+    return new Promise((resolve, reject) =>{
+             const resutWthStatus = {
+                 result,
+                 status:false
+             }
+             function ready(el) {
+                 return el.status === 'fulfilled';
+             }
+             
+             if (result.every(ready)) {
+                 resutWthStatus.status = true;
+                 resolve(resutWthStatus)
+             } else {
+                 return reject('shit happens')
+             }
+         })
+ 
+ });
 
-Promise.allSettled([first, second, third, fourth])
-.then(result => {
-function status(result) {
-    let val = false
-// Проблема с тем, что бы выбрать сколько ж у result'a 'fullfield', что бы поставить if > 3 => true, не знаю, пол дня над этим отсидел, не то времени не хватает, не то знаний, не то мозгов) мб ты даш фидбэк и я что-то пойму
-    result.forEach((el, index) => {
-        // let stat = result[index].status
+const resultArray = [order_first, order_second, order_third, order_fouth, order_fivth]
+Promise.allSettled(resultArray)
+.then(results => {
+    const res = results.filter(element => element.status === 'fulfilled');
+        if (res.length >= 2) {
 
-        console.log(result[index].status)
-        if (result[index].status === 'fullfield') {
-            return  val = true
-        } 
-    })
-    return val
-}
-console.log({finished: `${status(result)}`, order: result})
+            console.log(res)
+        }
+
 })
-.catch(error => {
-console.log(error.message)
-})
-//  а мб вообще все криво сделано и надо было по-другому... ну крч..
+
